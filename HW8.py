@@ -43,7 +43,16 @@ def plot_rest_categories(db):
     restaurant categories and the values should be the number of restaurants in each category. The function should
     also create a bar chart with restaurant categories and the count of number of restaurants in each category.
     """
-    pass
+    d = {}
+    cur, conn = open_database(db)
+    cur.execute("SELECT c.category, COUNT(category_id) FROM restaurants r INNER JOIN categories c ON r.category_id = c.id GROUP BY c.category")
+    counts = cur.fetchall()
+    c_sorted = sorted(counts, key=lambda t : t[1], reverse=True)
+    
+    
+
+    return counts
+    
 
 def find_rest_in_building(building_num, db):
     '''

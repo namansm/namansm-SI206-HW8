@@ -1,12 +1,18 @@
-# Your name: 
-# Your student id:
-# Your email:
-# List who you have worked with on this homework:
+# Your name: Naman Mathur
+# Your student id: 17661408
+# Your email: namansm@umich.edu
+# List who you have worked with on this homework: N/A
 
 import matplotlib.pyplot as plt
 import os
 import sqlite3
 import unittest
+
+def open_database(db_name):
+    path = os.path.dirname(os.path.abspath(__file__))
+    conn = sqlite3.connect(path+'/'+db_name)
+    cur = conn.cursor()
+    return cur, conn
 
 def load_rest_data(db):
     """
@@ -15,7 +21,21 @@ def load_rest_data(db):
     and each inner key is a dictionary, where the key:value pairs should be the category, 
     building, and rating for the restaurant.
     """
-    pass
+    d = {}
+    cur, conn = open_database(db)
+    cur.execute("SELECT r.name, r.rating, c.category FROM restaurants r INNER JOIN categories c ON r.category_id = c.id")
+    cat = cur.fetchall()
+    cur.execute("SELECT b.building FROM restaurants r INNER JOIN buildings b ON r.building_id = b.id")
+    build = cur.fetchall()
+
+    for i in range(0,25):
+        temp = {}
+        temp["category"] = cat[i][2]
+        temp["building"] = build[i][0]
+        temp["rating"] = cat[i][1]
+        d[cat[i][0]] = temp
+
+    return d    
 
 def plot_rest_categories(db):
     """

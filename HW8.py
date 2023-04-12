@@ -47,11 +47,28 @@ def plot_rest_categories(db):
     cur, conn = open_database(db)
     cur.execute("SELECT c.category, COUNT(category_id) FROM restaurants r INNER JOIN categories c ON r.category_id = c.id GROUP BY c.category")
     counts = cur.fetchall()
-    c_sorted = sorted(counts, key=lambda t : t[1], reverse=True)
-    
-    
 
-    return counts
+    for c in counts:
+        d[c[0]] = c[1]
+    
+    d_sorted = dict(sorted(d.items(), key=lambda t : t[1], reverse=True))
+    
+    # plot
+    rests = []
+    nums = []
+    for key, value in d_sorted.items():
+        rests.append(key)
+        nums.append(value)
+    fig, ax = plt.subplots()
+    ax.barh(rests, nums, align='center')
+    #ax.set_yticks(, labels=people)
+    ax.invert_yaxis()  # labels read top-to-bottom
+    ax.set_xlabel('Number of Restaurants')
+    ax.set_xlabel('Type of Restaurant')
+    ax.set_title('Number of Restaurants per Type')
+     
+    plt.savefig('rests_vs_nums.png')
+    return d
     
 
 def find_rest_in_building(building_num, db):
